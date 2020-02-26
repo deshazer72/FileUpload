@@ -48,5 +48,5 @@ you could deploy this to azure app service and the dp to azure and it would be a
 ## Acknowledgments
 
 * steve sanderson for the tips on uploading files and javascript introp
-* For the love of c# and using blazor
-* I would of made the UI better added tests to the project. did more testing. 
+* I love c# and blazor has me exicted about doing all my apps in c#
+* I would of made the UI better added tests to the project. I should of done more testing 
