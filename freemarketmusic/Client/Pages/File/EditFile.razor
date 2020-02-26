@@ -1,0 +1,64 @@
+﻿@page "/File/editFile/{fileId}"
+@using freemarketmusic.Shared
+@inject HttpClient client
+@inject Microsoft.AspNetCore.Components.NavigationManager navigation
+
+<h2>Edit</h2>
+<h4>Employees</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input for="Name" class="form-control" @bind="@file.FileName" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" @onclick="@(async () => await UpdateFile())" class="btn btn-default" />
+                <input type="submit" value="Cancel" @onclick="@cancel" class="btn" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string fileId { get; set; }
+
+    FileDataVM FileDataVM = new FileDataVM();
+
+    FileDatum file = new FileDatum();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string path = "/File/Details/" + Convert.ToInt32(fileId);
+        try
+        {
+            file = await client.GetJsonAsync<FileDatum>(path);
+            FileDataVM.OriginalFileName = file.FileName;
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    protected async Task UpdateFile()
+    {
+        FileDataVM.FileName = file.FileName;
+        FileDataVM.FileId = file.FileId;
+        await client.SendJsonAsync(HttpMethod.Put, $"/File/Edit", FileDataVM);
+        navigation.NavigateTo("/File/GetFiles");
+
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/File/GetFiles");
+
+    }
+}

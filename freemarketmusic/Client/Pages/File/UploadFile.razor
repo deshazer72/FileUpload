@@ -1,0 +1,47 @@
+﻿@page "/File/UploadFile"
+@inject HttpClient client
+
+<h3>UploadFile</h3>
+
+<div class="drag-drop-zone">
+    <InputFile multiple OnChange="HandleSelection" />
+</div>
+
+@if (selectedFiles != null)
+{
+    foreach (var file in selectedFiles)
+    {
+        var isLoading = file.Data.Position > 0;
+
+        <div class="file-row">
+            <!-- File info -->
+            <div>
+                <h2>@file.Name</h2>
+                Size: <strong>@file.Size bytes</strong>;
+                Last modified: <strong>@file.LastModified.ToShortDateString()</strong>;
+                Type: <strong>@file.Type</strong>
+            </div>
+        </div>
+    }
+}
+
+@code {
+
+    IFileListEntry[] selectedFiles;
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        selectedFiles = files;
+        foreach(var file in files) 
+        {
+            if (file != null)
+            {
+                var ms = new MemoryStream();
+                await file.Data.CopyToAsync(ms);
+                var content = new MultipartFormDataContent {
+                {new ByteArrayContent(ms.GetBuffer()), "\"upload\"", file.Name}
+                };
+                await client.PostAsync("upload", content);
+             }
+        }  
+    }
+}
