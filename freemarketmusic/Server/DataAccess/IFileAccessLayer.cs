@@ -17,5 +17,8 @@ namespace freemarketmusic.Server.DataAccess
        void UpdateFile(FileDatum file, IWebHostEnvironment environment, string orignalFileName);
        FileDatum GetFileDatum(int FileId);
        void DeleteFile(int FileId, IWebHostEnvironment environment);
+       string GetPath(string environment, string folder, string fileName);
+
+       string GetContentType(string path)
     }
 }

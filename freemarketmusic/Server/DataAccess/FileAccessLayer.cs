@@ -15,7 +15,6 @@ namespace freemarketmusic.Server.DataAccess
     public class FileAccessLayer : IFileAccessLayer
     {
       private FMMContext _context;
-      private string clientpath = "D:\\freemarketmusic\freemarketmusic\\Client";
 
       public FileAccessLayer(IWebHostEnvironment environment, FMMContext context) 
       {
@@ -94,7 +93,7 @@ namespace freemarketmusic.Server.DataAccess
             {
                 _context.Entry(file).State = EntityState.Modified;
                 _context.SaveChanges();
-               var path = Path.Combine(environment.ContentRootPath, "uploads", originalFileName);
+                var path = GetPath(environment.ContentRootPath, "uploads", file.FileName);
                var desFileName = Path.Combine(environment.ContentRootPath, "uploads", file.FileName);
                 
                 if(File.Exists(path)) 
@@ -107,6 +106,37 @@ namespace freemarketmusic.Server.DataAccess
             {
                 throw new Exception(e.Message);
             }
+        }
+
+            private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"},
+                {".mp3", "application/force-download"}
+            };
+        }
+
+        public string GetPath(string environment, string folder, string fileName)
+        {
+           return Path.Combine(environment, folder, fileName);
         }
 
     }
