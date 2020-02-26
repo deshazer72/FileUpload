@@ -1,0 +1,48 @@
+﻿@page "/File/deletefile/{fileId}"
+@using freemarketmusic.Shared
+@inject HttpClient client
+@inject Microsoft.AspNetCore.Components.NavigationManager navigation
+
+<h2>Delete</h2>
+<h3>Are you sure you want to delete file with id : @filedata.FileName</h3>
+<br />
+
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>@filedata.FileName</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Delete" @onclick="@(async () => await Delete())" class="btn btn-default" />
+        <input type="submit" value="Cancel" @onclick="@cancel" class="btn" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string fileId { get; set; }
+
+    FileDatum filedata = new FileDatum();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        string path = "/File/Details/" + Convert.ToInt32(fileId);
+        filedata = await client.GetJsonAsync<FileDatum>(path);
+    }
+
+    protected async Task Delete()
+    {
+        string path = "/File/Delete/" + Convert.ToInt32(fileId);
+        await client.DeleteAsync(path);
+        navigation.NavigateTo("/File/GetFiles");
+    }
+
+    void cancel()
+    {
+        navigation.NavigateTo("/File/GetFiles");
+    }
+
+}

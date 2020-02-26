@@ -1,0 +1,55 @@
+﻿@page "/File/GetFiles"
+@using freemarketmusic.Shared
+@inject HttpClient client
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRunTime
+<h3>GetFile</h3>
+
+@if (uploadedfiles == null)
+{
+    <p><em>Loading ....</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var uploadfile in uploadedfiles)
+            {
+                <tr>
+                    <td>@uploadfile.FileName</td>
+                    <td>
+                        <a href="/File/editfile/@uploadfile.FileId">Edit</a> |
+                        <a href='/File/deletefile/@uploadfile.FileId'>Delete</a> |
+                        <button class="btn" @onclick="(() => DownloadFile(uploadfile.FileName))">Download File</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-primary" @onclick="NavigateToUploadFileComponent">Upload Files</button>
+}
+
+@code {
+    private FileDatum[] uploadedfiles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        uploadedfiles = await client.GetJsonAsync<FileDatum[]>("Upload");
+    }
+
+    private void NavigateToUploadFileComponent()
+    {
+        NavigationManager.NavigateTo("/File/UploadFile");
+    }
+
+    public async Task DownloadFile(string fileName)
+    {
+    
+        await JsRunTime.InvokeAsync<string>("downloadFile", fileName);
+    }
+}
