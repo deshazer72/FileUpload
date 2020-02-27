@@ -1,4 +1,4 @@
-# FMM Chanlenge
+# File upload 
 
 This was a coding challenge to do crud operations on files. I used Blazor web assembly in this challenge.
 this code you can download a file/upload/view/delete/edit
