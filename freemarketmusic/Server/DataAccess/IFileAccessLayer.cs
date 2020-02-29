@@ -19,6 +19,6 @@ namespace freemarketmusic.Server.DataAccess
        void DeleteFile(int FileId, IWebHostEnvironment environment);
        string GetPath(string environment, string folder, string fileName);
 
-       string GetContentType(string path)
+       string GetContentType(string path);
     }
 }
