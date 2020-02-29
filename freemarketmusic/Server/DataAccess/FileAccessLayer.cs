@@ -27,7 +27,7 @@ namespace freemarketmusic.Server.DataAccess
             {
               _context.FileData.Add(fileData);
               _context.SaveChanges();
-              var path = Path.Combine(environment.ContentRootPath, "uploads", file.FileName);
+              var path = GetPath(environment.ContentRootPath, "uploads", file.FileName);
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -46,9 +46,8 @@ namespace freemarketmusic.Server.DataAccess
                FileDatum file = _context.FileData.Find(FileId);
                _context.FileData.Remove(file);
                _context.SaveChanges();
-               string fileName = file.FileName;
-               var path = Path.Combine(environment.ContentRootPath, "uploads", fileName);
-                
+               var path = GetPath(environment.ContentRootPath, "uploads", file.FileName);
+            
                 if(File.Exists(path)) 
                 {
                     File.Delete(path);
